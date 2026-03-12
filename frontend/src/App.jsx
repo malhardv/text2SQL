@@ -3,7 +3,7 @@ import axios from 'axios';
 import { UploadCloud, MessageSquare, Database, CheckCircle2, Loader2, Send, FileCode2, Table } from 'lucide-react';
 import './index.css';
 
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 function App() {
   const [isSetupComplete, setIsSetupComplete] = useState(false);
@@ -70,7 +70,7 @@ function App() {
       console.log(resp.data);
       setIsSetupComplete(true);
       setMessages([{
-        role: "assistant", 
+        role: "assistant",
         content: `Database successfully loaded! ${resp.data.tables_imported} tables created. How can I help you query your data today?`
       }]);
     } catch (err) {
@@ -93,20 +93,20 @@ function App() {
     try {
       const resp = await axios.post(`${API_BASE}/query`, { question: userMsg });
       const data = resp.data;
-      
-      setMessages(prev => [...prev, { 
-        role: "assistant", 
-        content: "Here are the results:", 
+
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Here are the results:",
         sql: data.generated_sql,
         columns: data.columns,
         rows: data.rows
       }]);
     } catch (err) {
       console.error(err);
-      setMessages(prev => [...prev, { 
-        role: "assistant", 
+      setMessages(prev => [...prev, {
+        role: "assistant",
         error: true,
-        content: err.response?.data?.detail || "Sorry, I encountered an error generating the SQL query." 
+        content: err.response?.data?.detail || "Sorry, I encountered an error generating the SQL query."
       }]);
     } finally {
       setIsTyping(false);
@@ -124,10 +124,10 @@ function App() {
             <h1>Initialize Database</h1>
             <p>Upload your data to start generating SQL from natural language.</p>
           </div>
-          
+
           <div className="upload-zones">
             {/* Schema Upload */}
-            <div 
+            <div
               className={`upload-zone ${schemaFile ? 'success' : ''}`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleSchemaDrop}
@@ -143,7 +143,7 @@ function App() {
             </div>
 
             {/* CSV Data Upload */}
-            <div 
+            <div
               className={`upload-zone ${csvFiles.length > 0 ? 'success' : ''}`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleCsvDrop}
@@ -161,9 +161,9 @@ function App() {
 
           {uploadError && <div className="error-message">{uploadError}</div>}
 
-          <button 
-            className="btn-primary start-btn" 
-            onClick={handleSetupSubmit} 
+          <button
+            className="btn-primary start-btn"
+            onClick={handleSetupSubmit}
             disabled={isUploading || !schemaFile || csvFiles.length === 0}
           >
             {isUploading ? <><Loader2 className="spin" /> Building Database...</> : "Start Chatting"}
@@ -179,7 +179,7 @@ function App() {
         <Database className="icon-sm" />
         <h2>Database Chat Assistant</h2>
       </div>
-      
+
       <div className="chat-messages">
         {messages.map((msg, idx) => (
           <div key={idx} className={`message-wrapper ${msg.role}`}>
@@ -188,14 +188,14 @@ function App() {
             </div>
             <div className={`message-bubble ${msg.error ? 'error' : ''}`}>
               <p>{msg.content}</p>
-              
+
               {msg.sql && (
                 <div className="sql-block">
                   <div className="sql-header">Generated SQL</div>
                   <code>{msg.sql}</code>
                 </div>
               )}
-              
+
               {msg.columns && msg.rows && msg.rows.length > 0 && (
                 <div className="table-responsive">
                   <table className="data-table">
@@ -234,9 +234,9 @@ function App() {
 
       <div className="chat-input-area">
         <form onSubmit={handleSendMessage} className="input-form glass-panel">
-          <input 
-            type="text" 
-            placeholder="Ask a question about your database..." 
+          <input
+            type="text"
+            placeholder="Ask a question about your database..."
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             disabled={isTyping}
