@@ -72,8 +72,8 @@ async def setup_database(
         uploads_dir = "uploads"
         os.makedirs(uploads_dir, exist_ok=True)
         
-        # 1. Save Schema to the root so schema_loader.py finds it
-        schema_path = "schema.sql"
+        # 1. Save Schema to the uploads dir so schema_loader.py finds it
+        schema_path = os.path.join(uploads_dir, "schema.sql")
         with open(schema_path, "wb") as buffer:
             shutil.copyfileobj(schema_file.file, buffer)
             

@@ -1,7 +1,7 @@
 import os
 
 # We will point this to wherever your .sql schema file lives
-SCHEMA_FILE_PATH = "schema.sql"
+SCHEMA_FILE_PATH = "uploads/schema.sql"
 
 def get_database_schema() -> str:
     """
